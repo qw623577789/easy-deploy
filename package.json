@@ -8,6 +8,10 @@
   },
   "author": "skip",
   "license": "ISC",
+  "repository": { 
+    "type": "git", 
+    "url": "https://github.com/qw623577789/easy-deploy.git" 
+  },
   "dependencies": {
     "child_process": "^1.0.2",
     "commander": "2.15.1",
