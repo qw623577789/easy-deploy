@@ -20,6 +20,27 @@ module.exports = {
             // pm2PidFile: "",                      //程序进程id存放位置，默认:~/.pm2/pids/app_name-id.pid
             // errorRestartWatchInterval: "",       //程序报错重启侦测间隔，单位毫秒，默认:5000
             // errorRestartUnitLimit: ""            //重启侦测间隔内最多允许重启的次数，默认:15
+        },
+        {
+            namePrefix: "dev/business/",            //若存在，会自动给name加上该前缀
+            name      : "activity1",                 //pm2上显示的程序名字，默认:default
+            script    : "/tmp/test.js",             //程序路径
+            args      : {                           //若存在，则运行时添加运行参数
+                "host": "0.0.0.0",
+                "port": 20003,
+                "logPath": "/tmp/activity",
+            },                                      
+            env: {                                  //若存在，则运行时添加env配置
+                "host": "0.0.0.0",
+            },
+            nodeArgs : {                            //若存在，则运行时添加node配置
+                "max-old-space-size": "4096"
+            },
+            // pm2OutFile: "",                      //程序标准输出日志文件位置,默认：~/.pm2/logs/app_name-out.log
+            // pm2ErrorFile: "",                    //程序标准出错日志文件位置，默认:~/.pm2/logs/app_name-error.log
+            // pm2PidFile: "",                      //程序进程id存放位置，默认:~/.pm2/pids/app_name-id.pid
+            // errorRestartWatchInterval: "",       //程序报错重启侦测间隔，单位毫秒，默认:5000
+            // errorRestartUnitLimit: ""            //重启侦测间隔内最多允许重启的次数，默认:15
         }
     ],
     deploy: {                                       //若存在，可执行发布操作

@@ -23,7 +23,6 @@
 
   Options:
 
-    --only <server_names>            针对部分程序(start、stop、restart适用)，逗号隔开
     -h, --help                       output usage information
 
   Commands:
@@ -34,7 +33,37 @@
     deploy <config_files...>         发布(多个)项目
     ecosystem <target_config_file>   生成配置模板,例如：xxx.js
 ```
+```shell
+  Usage: start [options] <config_file>
 
+  启动项目
+
+  Options:
+
+    --only [server_names]  启动部分程序
+    -h, --help      output usage information
+```
+```shell
+  Usage: stop [options] <config_file>
+
+  停止项目
+
+  Options:
+
+    --only <server_names>  停止部分程序
+    -h, --help      output usage information
+```
+```shell
+  Usage: restart [options] <config_file>
+
+  重启项目
+
+  Options:
+
+    --only <server_names>  重启部分程序
+    -h, --help      output usage information
+
+```
 ## 配置模板
 ```js
 module.exports = {
