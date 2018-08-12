@@ -1,42 +1,3 @@
-# easy-deploy
-### 基于pm2与ansible的简易项目运行与发布node库
-
-## 背景
-对于一个采用微服务架构的项目，项目的运行与发布是件很麻烦的事．
-
-需求点：
-* 每个服务都有自己的运行参数及相关配置，而且往往开发、生产环境相关配置也不一样，这时需要有个地方能统一管理这些配置，并能方便的拉起，停止，重启，监控项目
-* 项目发布一般会经历线上代码备份、代码发布、初始化操作、重新拉起程序(如果需要)，期间可能还会穿插一些本地、远程操作，希望能每个项目少写点发布代码，统一管理这个流程，而且内外网操作能在同一台机器上执行
-* 批量多机部署
-
-本库基于PM2对进程的管理，Ansible是款运维自动化工具，实现本机对外网机器操作．结合这两款工具实现对项目运行、部署管理
-
-## 依赖要求
-
-本机: node、pm2、ansible、python2.7、rsync
-
-远程主机: node、pm2、python2.7
-
-## 基本命令
-```shell
-  Usage: easy-deploy [options] [command]
-
-  Options:
-
-    --only <server_names>            针对部分程序(start、stop、restart适用)，逗号隔开
-    -h, --help                       output usage information
-
-  Commands:
-
-    start [options] <config_file>    启动项目
-    stop [options] <config_file>     停止项目
-    restart [options] <config_file>  重启项目
-    deploy <config_files...>         发布(多个)项目
-    ecosystem <target_config_file>   生成配置模板,例如：xxx.js
-```
-
-## 配置模板
-```js
 module.exports = {
     apps: [                                         //程序配置列表
         {
@@ -94,4 +55,3 @@ module.exports = {
         }
 	}
 }
-```
