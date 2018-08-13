@@ -20,7 +20,10 @@ module.exports = {
 }
 
 function configCheck(configPath) {
-    if (!fs.existsSync(configPath)) throw new Error(`${configPath} is not exist`);
+    if (!fs.existsSync(configPath)) {
+        console.log(`\x1b[31m${configPath} is not exist\x1b[0m`);
+        process.exit(-1);
+    }
     const Validator = require('semantic-schema').validator;
     let validator = new Validator(require(`${__dirname}/../schema`));
     let json = require(configPath);

@@ -13,7 +13,7 @@ module.exports = class {
 
     async _execute(moduleName, showDetail, args) {
         let ansible = new Ansible();
-        let hostConfig = {
+        let hostConfig = this._host == 'localhost' ? {} : {
             [this._host] : {
                 ansible_ssh_port: this._sshPort,
                 ansible_ssh_private_key_file: this._privateSSHKeyFile,

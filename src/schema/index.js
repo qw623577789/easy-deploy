@@ -38,5 +38,9 @@ module.exports = object().properties({
             afterLocal: array().item(string()),
             afterRemote: array().item(string())
         })
-    }).required('user', 'host', 'localRoot', 'remoteRoot')
+    })
+        .if.properties({host: 'localhost'})
+        .then.required('host')
+        .else.required('user', 'host', 'localRoot', 'remoteRoot')
+        .endIf
 }).required('apps')
