@@ -27,7 +27,7 @@ commander.command('restart <config_file>')
 commander.command('deploy <config_files...>')
     .description('发布(多个)项目')
     .action((configFiles) => {
-        require(`${__dirname}/../src/core`).deploy(configFiles.map(_ => `${__dirname}/${path.relative(__dirname,  configFile)}`));
+        require(`${__dirname}/../src/core`).deploy(configFiles.map(_ => `${__dirname}/${path.relative(__dirname,  _)}`));
     })
 
 commander.command('ecosystem <target_config_file>')

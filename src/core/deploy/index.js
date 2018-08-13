@@ -35,7 +35,8 @@ module.exports = async(configs) => {
             console.log("\x1b[32mremote backup...\x1b[0m");
             let {saveDir, pattern = 'YYYY-MM-DD HH:mm:ss', exclude = []} = backup;
             await remote.shell({
-                args: `if [ -e /tmp/abd/ ];then cd ${remoteRoot} && tar -zcvf ${saveDir}/${moment().format(pattern)}.tar.gz ./ ${exclude.map(_ => `--exclude=${_}`).join(' ')};fi`
+                args: `if [ -e ${remoteRoot} ];then cd ${remoteRoot} && tar -zcvf ${saveDir}/${moment().format(pattern)}.tar.gz ./ ${exclude.map(_ => `--exclude=${_}`).join(' ')};fi`,
+                showDetail: false
             })
         }
     

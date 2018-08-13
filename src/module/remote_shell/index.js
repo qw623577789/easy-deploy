@@ -29,7 +29,7 @@ module.exports = class {
             .args(args)
             .inventory(tmpFile)
             .on('stdout', (data) => { 
-                if (showDetail) console.log(`${data.indexOf('SUCCESS') != -1 ? "\x1b[36m":"\x1b[31m"}${data.toString()}\x1b[0m`); }
+                if (showDetail) console.log(`\x1b[36m${data.toString()}\x1b[0m`); }
             )
             .on('stderr', (data) => { 
                 console.log(`\x1b[31m${data.toString()}\x1b[0m`); 
