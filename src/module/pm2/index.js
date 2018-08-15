@@ -1,15 +1,15 @@
 const childProcess = require('child_process');
 
 module.exports = class {
-    static async _execute(method, {script, name, namePrefix, args, env, nodeArgs, logOutFile, logErrorFile, logPidFile, errorRestartWatchInterval, errorRestartUnitLimit}) {
+    static async _execute(method, {script, name, namePrefix, args, env, nodeArgs, logOutFile, logErrorFile, logPidFile, minAliveTime, restartLimitBeforeAlive}) {
         let startupConfig = {
             name: `${namePrefix}${name}`,
             script: script,
             env: {},
             node_args: "",
             args: "",
-            min_uptime: errorRestartWatchInterval,
-            max_restarts: errorRestartUnitLimit
+            min_uptime: minAliveTime,
+            max_restarts: restartLimitBeforeAlive
         }
 
         if (args != undefined) {
@@ -44,19 +44,19 @@ module.exports = class {
         })
     }
 
-    static async start({script, name = 'default', namePrefix = '', args = undefined, env = undefined, nodeArgs = undefined, logOutFile = undefined, logErrorFile = undefined, logPidFile = undefined, errorRestartWatchInterval = 5000, errorRestartUnitLimit = 15}) {
-        return this._execute('start', {script, name, namePrefix, args, env, nodeArgs, logOutFile, logErrorFile, logPidFile, errorRestartUnitLimit});
+    static async start({script, name = 'default', namePrefix = '', args = undefined, env = undefined, nodeArgs = undefined, logOutFile = undefined, logErrorFile = undefined, logPidFile = undefined, minAliveTime = 5000, restartLimitBeforeAlive = 1}) {
+        return this._execute('start', {script, name, namePrefix, args, env, nodeArgs, logOutFile, logErrorFile, logPidFile, restartLimitBeforeAlive, minAliveTime});
     }
 
-    static async restart({script, name = 'default', namePrefix = '', args = undefined, env = undefined, nodeArgs = undefined, logOutFile = undefined, logErrorFile = undefined, logPidFile = undefined, errorRestartWatchInterval = 5000, errorRestartUnitLimit = 15}) {
-        return this._execute('restart', {script, name, namePrefix, args, env, nodeArgs, logOutFile, logErrorFile, logPidFile, errorRestartUnitLimit});
+    static async restart({script, name = 'default', namePrefix = '', args = undefined, env = undefined, nodeArgs = undefined, logOutFile = undefined, logErrorFile = undefined, logPidFile = undefined, minAliveTime = 5000, restartLimitBeforeAlive = 1}) {
+        return this._execute('restart', {script, name, namePrefix, args, env, nodeArgs, logOutFile, logErrorFile, logPidFile, restartLimitBeforeAlive, minAliveTime});
     }
 
-    static async stop({script, name = 'default', namePrefix = '', args = undefined, env = undefined, nodeArgs = undefined, logOutFile = undefined, logErrorFile = undefined, logPidFile = undefined, errorRestartWatchInterval = 5000, errorRestartUnitLimit = 15}) {
-        return this._execute('stop', {script, name, namePrefix, args, env, nodeArgs, logOutFile, logErrorFile, logPidFile, errorRestartUnitLimit});
+    static async stop({script, name = 'default', namePrefix = '', args = undefined, env = undefined, nodeArgs = undefined, logOutFile = undefined, logErrorFile = undefined, logPidFile = undefined, minAliveTime = 5000, restartLimitBeforeAlive = 1}) {
+        return this._execute('stop', {script, name, namePrefix, args, env, nodeArgs, logOutFile, logErrorFile, logPidFile, restartLimitBeforeAlive, minAliveTime});
     }
 
-    static async delete({script, name = 'default', namePrefix = '', args = undefined, env = undefined, nodeArgs = undefined, logOutFile = undefined, logErrorFile = undefined, logPidFile = undefined, errorRestartWatchInterval = 5000, errorRestartUnitLimit = 15}) {
-        return this._execute('delete', {script, name, namePrefix, args, env, nodeArgs, logOutFile, logErrorFile, logPidFile, errorRestartUnitLimit});
+    static async delete({script, name = 'default', namePrefix = '', args = undefined, env = undefined, nodeArgs = undefined, logOutFile = undefined, logErrorFile = undefined, logPidFile = undefined, minAliveTime = 5000, restartLimitBeforeAlive = 1}) {
+        return this._execute('delete', {script, name, namePrefix, args, env, nodeArgs, logOutFile, logErrorFile, logPidFile, restartLimitBeforeAlive, minAliveTime});
     }
 }

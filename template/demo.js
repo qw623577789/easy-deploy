@@ -18,8 +18,8 @@ module.exports = {
             // pm2OutFile: "",                      //程序标准输出日志文件位置,默认：~/.pm2/logs/app_name-out.log
             // pm2ErrorFile: "",                    //程序标准出错日志文件位置，默认:~/.pm2/logs/app_name-error.log
             // pm2PidFile: "",                      //程序进程id存放位置，默认:~/.pm2/pids/app_name-id.pid
-            // errorRestartWatchInterval: "",       //程序报错重启侦测间隔，单位毫秒，默认:5000
-            // errorRestartUnitLimit: ""            //重启侦测间隔内最多允许重启的次数，默认:15
+            // minAliveTime: 10000,                 //程序启动后最短运行时间，单位毫秒，默认:5000，低于此时间属于不正常启动
+            // restartLimitBeforeAlive: 2           //正常启动前最多允许错误自动重启的次数，默认:1
         },
         {
             namePrefix: "dev/business/",            //若存在，会自动给name加上该前缀
@@ -39,8 +39,8 @@ module.exports = {
             // pm2OutFile: "",                      //程序标准输出日志文件位置,默认：~/.pm2/logs/app_name-out.log
             // pm2ErrorFile: "",                    //程序标准出错日志文件位置，默认:~/.pm2/logs/app_name-error.log
             // pm2PidFile: "",                      //程序进程id存放位置，默认:~/.pm2/pids/app_name-id.pid
-            // errorRestartWatchInterval: "",       //程序报错重启侦测间隔，单位毫秒，默认:5000
-            // errorRestartUnitLimit: ""            //重启侦测间隔内最多允许重启的次数，默认:15
+            // minAliveTime: 10000,                 //程序启动后最短运行时间，单位毫秒，默认:5000，低于此时间属于不正常启动
+            // restartLimitBeforeAlive: 2           //正常启动前最多允许错误自动重启的次数，默认:1
         }
     ],
     deploy: {                                       //若存在，可执行发布操作

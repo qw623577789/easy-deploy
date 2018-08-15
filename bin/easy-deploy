@@ -5,23 +5,26 @@ let commander = require('commander');
 
 commander.command('start <config_file>')
     .option('--only [server_names]', '启动部分程序', (v, m) => m == undefined ? [v] : m.concat(v))
+    .option('--exclude [server_names]', '排除部分程序启动', (v, m) => m == undefined ? [v] : m.concat(v))
     .description('启动项目')
-    .action((configFile, {only}) => {
-        require(`${__dirname}/../src/core`).start(`${__dirname}/${path.relative(__dirname,  configFile)}`, only);
+    .action((configFile, {only, exclude}) => {
+        require(`${__dirname}/../src/core`).start(`${__dirname}/${path.relative(__dirname,  configFile)}`, {only, exclude});
     })
     
 commander.command('stop <config_file>')
     .description('停止项目')
     .option('--only [server_names]', '停止部分程序', (v, m) => m == undefined ? [v] : m.concat(v))
-    .action((configFile, {only}) => {
-        require(`${__dirname}/../src/core`).stop(`${__dirname}/${path.relative(__dirname,  configFile)}`, only);
+    .option('--exclude [server_names]', '排除部分程序停止', (v, m) => m == undefined ? [v] : m.concat(v))
+    .action((configFile, {only, exclude}) => {
+        require(`${__dirname}/../src/core`).stop(`${__dirname}/${path.relative(__dirname,  configFile)}`, {only, exclude});
     })
 
 commander.command('restart <config_file>')
     .description('重启项目')
     .option('--only [server_names]', '重启部分程序', (v, m) => m == undefined ? [v] : m.concat(v))
-    .action((configFile, {only}) => {
-        require(`${__dirname}/../src/core`).restart(`${__dirname}/${path.relative(__dirname,  configFile)}`, only);
+    .option('--exclude [server_names]', '排除部分程序重启', (v, m) => m == undefined ? [v] : m.concat(v))
+    .action((configFile, {only, exclude}) => {
+        require(`${__dirname}/../src/core`).restart(`${__dirname}/${path.relative(__dirname,  configFile)}`, {only, exclude});
     })
 
 commander.command('deploy <config_files...>')

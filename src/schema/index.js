@@ -16,8 +16,8 @@ module.exports = object().properties({
         pm2OutFile: string(),
         pm2ErrorFile: string(),
         pm2PidFile: string(),
-        errorRestartWatchInterval: integer(),
-        errorRestartUnitLimit: integer().min(1)
+        minAliveTime: integer(),
+        restartLimitBeforeAlive: integer().min(1)
     }).required('script')),
     deploy: object().properties({
         user: string(),
