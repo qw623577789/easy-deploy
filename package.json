@@ -1,6 +1,6 @@
 {
   "name": "easy-deploy-tool",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "基于pm2与ansible的简易项目运行与发布node库",
   "main": "index.js",
   "scripts": {
@@ -11,9 +11,9 @@
   },
   "author": "skip",
   "license": "ISC",
-  "repository": { 
-    "type": "git", 
-    "url": "https://github.com/qw623577789/easy-deploy.git" 
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/qw623577789/easy-deploy.git"
   },
   "dependencies": {
     "child_process": "^1.0.2",
