@@ -49,7 +49,7 @@ module.exports = {
         sshPort: 22,
         // privateSSHKeyFile: "",                   //登录密钥文件，默认系统配置
         localRoot: "/tmp/abc",                      //本地项目路径
-        remoteRoot: "/tmp/abd/",                    //远程项目路径
+        remoteRoot: "/tmp/abd",                    //远程项目路径
         exclude: [                                  //若存在，同步到外网忽略的文件列表
             '8888.txt'                 
         ],

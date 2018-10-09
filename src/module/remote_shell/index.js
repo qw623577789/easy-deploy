@@ -14,18 +14,21 @@ module.exports = class {
     async _execute(moduleName, showDetail, args) {
         let ansible = new Ansible();
         let hostConfig = this._host == 'localhost' ? {} : {
-            [this._host] : {
-                ansible_ssh_port: this._sshPort,
-                ansible_ssh_private_key_file: this._privateSSHKeyFile,
-                ansible_ssh_pass: this._password
+            esc : {
+                hosts: [this._host],
+                vars: {
+                    ansible_ssh_port: this._sshPort,
+                    ansible_ssh_private_key_file: this._privateSSHKeyFile,
+                    ansible_ssh_pass: this._password
+                }
             }
         }
         let tmpFile = `/tmp/${uuid()}.py`;
-        fs.writeFileSync(tmpFile, `#!/usr/bin/python\n#coding = utf-8\nprint(${JSON.stringify(hostConfig)})`);
+        fs.writeFileSync(tmpFile, `#!/usr/bin/python\n#coding = utf-8\nimport json\nprint json.dumps(${JSON.stringify(hostConfig)})`);
         fs.chmodSync(tmpFile, "0777");
         let result = await ansible.module(moduleName)
             .user(this._user)
-            .hosts(this._host)
+            .hosts("esc")
             .args(args)
             .inventory(tmpFile)
             .on('stdout', (data) => { 
@@ -48,13 +51,17 @@ module.exports = class {
         return this._execute('shell', showDetail, args);
     }
 
+    async mkdir({path, mode = "0777", showDetail = true}) {
+        return this._execute('file', showDetail, `path=${path} state=directory`);
+    }
+
     async rsync({src, dest, exclude = [], showDetail = true}) {
-        let params = {
+        let params = Object.assign({
             src: src,
             dest: dest,
-            dest_port: this._sshPort,
-            rsync_opts: `${exclude.map(_ => `--exclude=${_}`).join(',')}`
-        }
+            links: "no",
+            dest_port: this._sshPort
+        }, exclude.length == 0 ? {} : {rsync_opts: `${exclude.map(_ => `--exclude=${_}`).join(',')}`});
         return this._execute('synchronize', 
             showDetail,
             Object.keys(params).map(key => `${key}=${params[key]}`)
