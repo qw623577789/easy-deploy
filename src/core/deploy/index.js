@@ -64,7 +64,8 @@ async function localShell(tasks) {
     console.log("\x1b[32m[Hook Local] ...\x1b[0m");
     for (let task of tasks) {
         await new Promise((resolve, reject) => {
-            childProcess.exec(task, { stdio: [0, 1, 2] }, (error, stdout) => {
+            childProcess.exec(task, (error, stdout) => {
+                console.log(`\x1b[36m${stdout.toString()}\x1b[0m`);
                 if (error != undefined) return reject(error);
                 return resolve(stdout);
             })
