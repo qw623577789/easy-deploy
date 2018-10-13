@@ -127,5 +127,78 @@ module.exports = {
 	}
 }
 ```
+## 配置终端交互
+有时配置文件里某些值需要外部传入，那么交互功能则是提供一套组件供开发者使用．其基于readline-sync库进行封装．目前提供以下几种交互:
+交互|方法|参数|返回值|备注
+---|:--:|:--:|:--:|---
+输入文本|question|(tip, defaultValue?)|输入的内容|不输入直接回车则采用返回值
+输入文件路径|file|(tip)|文件路径||
+输入文件夹路径|dir|(tip)|文件夹路径||
+Yes/No|confirm|(tip)|布尔值||
+选项选择|select|(tip, options)|选择项内容||
+### 使用方式
+例子中的交互场景可能不太适合，仅做演示用．
+```js
+const {question, file, dir, confirm, select} = require('easy-deploy-tool').interact;
+const name = question('请输入程序名：');
+const script = file('请输入启动文件位置:');
+const logPath = dir('请输入日志位置:')；
+const maxOldSpaceSize = select('请选择最大占用内存值:', [1024, 2046, 4098]);
+const enableLog = confirm('是否开启日志功能?');
+
+module.exports = {
+    apps: [                                        
+        {
+            namePrefix: "dev/business/",      
+            name      : name,                 
+            script    : script,          
+            args      : {                        
+                "host": "0.0.0.0",
+                "port": 20003,
+                "logPath": logPath,
+                "enableLog": enableLog
+            },                                      
+            env: {                                
+                "host": "0.0.0.0",
+            },
+            nodeArgs : {                       
+                "max-old-space-size": maxOldSpaceSize
+            }
+        }
+    ],
+    deploy: {                                       //若存在，可执行发布操作
+        user: "test",                               //登录名
+        host: "10.10.4.87",                         //远程ip
+        sshPort: 22,
+        // privateSSHKeyFile: "",                   //登录密钥文件，默认系统配置
+        localRoot: "/tmp/abc",                      //本地项目路径
+        remoteRoot: "/tmp/abd/",                    //远程项目路径
+        exclude: [                                  //若存在，同步到外网忽略的文件列表
+            '8888.txt'                 
+        ],
+        backup: {                                   //若节点存在，则开启发布前备份
+            saveDir: "/tmp",                        //备份文件存放路径
+            pattern: "YYYY-MM-DD",                  //文件名规则，默认:YYYY-MM-DD HH:mm:ss,格式参见http://momentjs.com/docs/#/displaying/
+            exclude: [                              //若存在，则备份时忽略文件列表
+                '8888.txt'             
+            ]
+        },
+        hook: {                                     //若节点存在，则发布操作触发钩子
+            preLocal: [                             //若节点存在，则发布前本地执行的操作列表
+                "echo 'local hello before deploy'"
+            ],
+            preRemote: [                            //若节点存在，则发布前远程执行的操作列表
+                "echo 'remote hello before deploy'"
+            ],
+            afterLocal: [                           //若节点存在，则发布后本地执行的操作列表
+                "echo 'local hello after deploy'"
+            ],
+            afterRemote: [                          //若节点存在，则发布后远程执行的操作列表
+                "echo 'remote hello after deploy'"
+            ]
+        }
+	}
+}
+```
 ## 备注
 1. 2018-09-20 增加引用node全局库，对于配置文件里面引用了第三方库情况，只需先行npm -g install xxx对应的库，再执行命令即可

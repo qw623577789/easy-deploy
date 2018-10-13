@@ -59,7 +59,6 @@ module.exports = class {
         let params = Object.assign({
             src: src,
             dest: dest,
-            links: "no",
             dest_port: this._sshPort
         }, exclude.length == 0 ? {} : {rsync_opts: `${exclude.map(_ => `--exclude=${_}`).join(',')}`});
         return this._execute('synchronize', 
