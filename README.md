@@ -40,9 +40,11 @@
 
   Options:
 
-    --only [server_names]  启动部分程序
+    --only [server_names]     启动部分程序
     --exclude [server_names]  排除部分程序启动
-    -h, --help      output usage information
+    --silent                  静默模式
+    --silentInput [inputs]    静默模式输入(按顺序)
+    -h, --help                output usage information
 ```
 ```shell
   Usage: stop [options] <config_file>
@@ -51,9 +53,11 @@
 
   Options:
 
-    --only <server_names>  停止部分程序
+    --only [server_names]     停止部分程序
     --exclude [server_names]  排除部分程序停止
-    -h, --help      output usage information
+    --silent                  静默模式
+    --silentInput [inputs]    静默模式输入(按顺序)
+    -h, --help                output usage information
 ```
 ```shell
   Usage: restart [options] <config_file>
@@ -62,9 +66,11 @@
 
   Options:
 
-    --only <server_names>  重启部分程序
+    --only [server_names]     重启部分程序
     --exclude [server_names]  排除部分程序重启
-    -h, --help      output usage information
+    --silent                  静默模式
+    --silentInput [inputs]    静默模式输入(按顺序)
+    -h, --help                output usage information
 
 ```
 ## 配置模板
@@ -199,6 +205,39 @@ module.exports = {
         }
 	}
 }
+```
+## 静默交互
+```shell
+--silent                  静默模式
+--silentInput [inputs]    静默模式输入(按顺序)
+```
+当配置文件存在交互情况时，有时候不方便输入参数，那么可以通过运行参数形式给配置文件传参数．**参数顺序代表输入顺序**．目前支持`start`、`stop`、`restart`、`deploy`命令．**Deploy Hook `preRemote`、`afterRemote`默认给每个命令加上静默参数.若远程命令为easy-deploy的话，可将本地交互内容传给远程命令**
+```js
+const {question} = require('easy-deploy-tool').interact;
+
+module.exports = {
+    apps: [         
+        {
+            namePrefix: "skip/",           
+            name      : "activity",                 
+            script    : "/tmp/abd1/1.js",             
+            args      : {                           
+                "host": question("请输入地址:"),
+                "port": question("请输入端口号:"),
+                "logPath": "/tmp/activity",
+            },                                      
+            env: {                                  
+                "host": "0.0.0.0",
+            },
+            nodeArgs : {                          
+                "max-old-space-size": "4096"
+            }
+        },
+    ]
+}
+```
+```shell
+easy-deploy start index.js --silent --silentInput 10.10.4.87 --silentInput 9200
 ```
 ## 备注
 1. 2018-09-20 增加引用node全局库，对于配置文件里面引用了第三方库情况，只需先行npm -g install xxx对应的库，再执行命令即可

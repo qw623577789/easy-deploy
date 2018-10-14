@@ -2,18 +2,39 @@ const readline = require('readline-sync');
 
 module.exports = {
     question: (tip, defaultValue = undefined) => {
+        if (easyDeploySilentMode == true) return silentInput.shift();
         let params = {};
         if (defaultValue != undefined) {
             params['defaultInput'] = defaultValue;
             tip += `(默认值:${defaultValue})`;
         }
-        return readline.question(tip, params);
+        let input = readline.question(tip, params);
+        silentInput.push(input);
+        return input;
     },
-    file: (tip) => readline.questionPath(tip, {isFile: true}),
-    dir: (tip) => readline.questionPath(tip, {isDirectory: true}),
-    confirm: (tip) => readline.keyInYNStrict(tip),
+    file: (tip) => {
+        if (easyDeploySilentMode == true) return silentInput.shift();
+        let input = readline.questionPath(tip, {isFile: true});
+        silentInput.push(input);
+        return input;
+    },
+    dir: (tip) => {
+        if (easyDeploySilentMode == true) return silentInput.shift();
+        let input = readline.questionPath(tip, {isDirectory: true});
+        silentInput.push(input);
+        return input;
+    },
+    confirm: (tip) => {
+        if (easyDeploySilentMode == true) return silentInput.shift();
+        let input = readline.keyInYNStrict(tip);
+        silentInput.push(input);
+        return input;
+    },
     select: (tip, options) => {
+        if (easyDeploySilentMode == true) return silentInput.shift();
         let index = readline.keyInSelect(options, tip);
-        return options[index];
+        let input = options[index];
+        silentInput.push(input);
+        return input;
     }
 }

@@ -3,43 +3,40 @@ const childProcess = require('child_process');
 const moment = require('moment');
 const fs = require('fs');
 
-module.exports = async(configs) => {
-    for (let config of configs) {
-        console.log(`\x1b[32m[Deploy] ${config.deploy.host}\x1b[0m`);
-        if (config.deploy == undefined) {
-            console.log(`\x1b[31m[Lack Of Deploy Node]\x1b[0m`);
-            process.exit(-1);
-        }
-    
-        let {deploy: {
-                user, 
-                host, 
-                sshPort = 22,
-                privateSSHKeyFile = undefined,
-                localRoot,
-                remoteRoot,
-                exclude = [],
-                backup = undefined,
-                hook = undefined
-            }} = config;
-        let remote = new RemoteShell({
-            host,
-            user,
-            sshPort,
-            privateSSHKeyFile
-        });
-        if (fs.statSync(localRoot).isDirectory && localRoot.substring(-1) != '/') localRoot += '/';
-        let isRemoteMode = host != "localhost";
-        if (isRemoteMode) await remoteConnectCheck(remote);
-        if (isRemoteMode && backup != undefined) await remoteBackup(remote, remoteRoot, backup);
-        if (hook != undefined && hook.preLocal != undefined) await localShell(hook.preLocal);
-        if (isRemoteMode && hook != undefined && hook.preRemote != undefined) await remoteShell(remote, hook.preRemote);
-        if (isRemoteMode) await rsync(remote, localRoot, remoteRoot, exclude);
-        if (hook != undefined && hook.afterLocal != undefined) await localShell(hook.afterLocal);
-        if (isRemoteMode && hook != undefined && hook.afterRemote != undefined) await remoteShell(remote, hook.afterRemote);
-        console.log("\x1b[32m[Done]\x1b[0m");
+module.exports = async(config) => {
+    console.log(`\x1b[32m[Deploy] ${config.deploy.host}\x1b[0m`);
+    if (config.deploy == undefined) {
+        console.log(`\x1b[31m[Lack Of Deploy Node]\x1b[0m`);
+        process.exit(-1);
     }
 
+    let {deploy: {
+            user, 
+            host, 
+            sshPort = 22,
+            privateSSHKeyFile = undefined,
+            localRoot,
+            remoteRoot,
+            exclude = [],
+            backup = undefined,
+            hook = undefined
+        }} = config;
+    let remote = new RemoteShell({
+        host,
+        user,
+        sshPort,
+        privateSSHKeyFile
+    });
+    if (fs.statSync(localRoot).isDirectory && localRoot.substring(-1) != '/') localRoot += '/';
+    let isRemoteMode = host != "localhost";
+    if (isRemoteMode) await remoteConnectCheck(remote);
+    if (isRemoteMode && backup != undefined) await remoteBackup(remote, remoteRoot, backup);
+    if (hook != undefined && hook.preLocal != undefined) await localShell(hook.preLocal);
+    if (isRemoteMode && hook != undefined && hook.preRemote != undefined) await remoteShell(remote, hook.preRemote);
+    if (isRemoteMode) await rsync(remote, localRoot, remoteRoot, exclude);
+    if (hook != undefined && hook.afterLocal != undefined) await localShell(hook.afterLocal);
+    if (isRemoteMode && hook != undefined && hook.afterRemote != undefined) await remoteShell(remote, hook.afterRemote);
+    console.log("\x1b[32m[Done]\x1b[0m");
 }
 
 async function remoteConnectCheck(remote) {
@@ -77,6 +74,7 @@ async function localShell(tasks) {
 async function remoteShell(remote, tasks) {
     console.log("\x1b[32m[Hook Remote] ...\x1b[0m");
     for (let task of tasks) {
+        task = `${task} --silent ${silentInput.map(_ => '--silentInput ' + _).join(' ')}`;
         await remote.shell({args: task});
     }
     console.log("\x1b[32m[Hook Remote] ✓\x1b[0m");

@@ -1,35 +1,46 @@
 #!/usr/bin/env node
+global.easyDeploySilentMode = false;
+global.silentInput = [];
+
 const path = require('path');
 const fs = require('fs');
 let commander = require('commander');
 commander.command('start <config_file>')
     .option('--only [server_names]', '启动部分程序', (v, m) => m == undefined ? [v] : m.concat(v))
     .option('--exclude [server_names]', '排除部分程序启动', (v, m) => m == undefined ? [v] : m.concat(v))
+    .option('--silent', '静默模式', (v) => v = true)
+    .option('--silentInput [inputs]', '静默模式输入(按顺序)', (v, m) => m == undefined ? [v] : m.concat(v))
     .description('启动项目')
-    .action((configFile, {only, exclude}) => {
-        require(`${__dirname}/../src/core`).start(`${__dirname}/${path.relative(__dirname,  configFile)}`, {only, exclude});
+    .action((configFile, {only, exclude, silent, silentInput}) => {
+        require(`${__dirname}/../src/core`).start(`${__dirname}/${path.relative(__dirname,  configFile)}`, {only, exclude, silent, silentInput});
     })
     
 commander.command('stop <config_file>')
     .description('停止项目')
     .option('--only [server_names]', '停止部分程序', (v, m) => m == undefined ? [v] : m.concat(v))
     .option('--exclude [server_names]', '排除部分程序停止', (v, m) => m == undefined ? [v] : m.concat(v))
-    .action((configFile, {only, exclude}) => {
-        require(`${__dirname}/../src/core`).stop(`${__dirname}/${path.relative(__dirname,  configFile)}`, {only, exclude});
+    .option('--silent', '静默模式', (v) => v = true)
+    .option('--silentInput [inputs]', '静默模式输入(按顺序)', (v, m) => m == undefined ? [v] : m.concat(v))
+    .action((configFile, {only, exclude, silent, silentInput}) => {
+        require(`${__dirname}/../src/core`).stop(`${__dirname}/${path.relative(__dirname,  configFile)}`, {only, exclude, silent, silentInput});
     })
 
 commander.command('restart <config_file>')
     .description('重启项目')
     .option('--only [server_names]', '重启部分程序', (v, m) => m == undefined ? [v] : m.concat(v))
     .option('--exclude [server_names]', '排除部分程序重启', (v, m) => m == undefined ? [v] : m.concat(v))
-    .action((configFile, {only, exclude}) => {
-        require(`${__dirname}/../src/core`).restart(`${__dirname}/${path.relative(__dirname,  configFile)}`, {only, exclude});
+    .option('--silent', '静默模式', (v) => v = true)
+    .option('--silentInput [inputs]', '静默模式输入(按顺序)', (v, m) => m == undefined ? [v] : m.concat(v))
+    .action((configFile, {only, exclude, silent, silentInput}) => {
+        require(`${__dirname}/../src/core`).restart(`${__dirname}/${path.relative(__dirname,  configFile)}`, {only, exclude, silent, silentInput});
     })
 
 commander.command('deploy <config_files...>')
     .description('发布(多个)项目')
-    .action((configFiles) => {
-        require(`${__dirname}/../src/core`).deploy(configFiles.map(_ => `${__dirname}/${path.relative(__dirname,  _)}`));
+    .option('--silent', '静默模式', (v) => v = true)
+    .option('--silentInput [inputs]', '静默模式输入(按顺序),多个配置的话使用相同的输入', (v, m) => m == undefined ? [v] : m.concat(v))
+    .action((configFiles, {silent, silentInput}) => {
+        require(`${__dirname}/../src/core`).deploy(configFiles.map(_ => `${__dirname}/${path.relative(__dirname,  _)}`), {silent, silentInput});
     })
 
 commander.command('ecosystem <target_config_file>')
@@ -37,7 +48,9 @@ commander.command('ecosystem <target_config_file>')
     .action((configFile) => {
         fs.copyFileSync(`${__dirname}/../template/demo.js`, `${__dirname}/${path.relative(__dirname,  configFile)}`);
         console.log(`\x1b[32mconfig ${__dirname}/${path.relative(__dirname,  configFile)} generated\x1b[0m`)
-    })    
+    })
+
+commander.version(require('../package.json').version, '-v, --version')
 commander.parse(process.argv);
 
 if (!process.argv.slice(2).length) {
