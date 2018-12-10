@@ -17,7 +17,10 @@ module.exports = object().properties({
         pm2ErrorFile: string(),
         pm2PidFile: string(),
         minAliveTime: integer(),
-        restartLimitBeforeAlive: integer().min(1)
+        restartLimitBeforeAlive: integer().min(1),
+        watch: array(string()),
+        ignoreWatch: array(string()),
+        watchFollowSymlinks: boolean()
     }).required('script')),
     deploy: object().properties({
         user: string(),

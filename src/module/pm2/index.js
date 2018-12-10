@@ -1,7 +1,8 @@
 const childProcess = require('child_process');
-
+const path = require('path');
 module.exports = class {
-    static async _execute(method, {script, name, namePrefix, args, env, nodeArgs, logOutFile, logErrorFile, logPidFile, minAliveTime, restartLimitBeforeAlive}) {
+    static async _execute(method, {script, name, namePrefix, args, env, nodeArgs, logOutFile, logErrorFile, logPidFile, minAliveTime, restartLimitBeforeAlive, watch, ignoreWatch, watchFollowSymlinks}) {
+        let basePath = path.dirname(script);
         let startupConfig = {
             name: `${namePrefix}${name}`,
             script: script,
@@ -9,7 +10,10 @@ module.exports = class {
             node_args: "",
             args: "",
             min_uptime: minAliveTime,
-            max_restarts: restartLimitBeforeAlive
+            max_restarts: restartLimitBeforeAlive,
+            watch: watch != false ? watch.map(_ => `${basePath}/${_}`) : watch,
+            ignore_watch: ignoreWatch != false ? ignoreWatch.map(_ => `${basePath}/${_}`) : ignoreWatch,
+            watchFollowSymlinks
         }
 
         if (args != undefined) {
@@ -36,7 +40,7 @@ module.exports = class {
         if (logPidFile != undefined) startupConfig['pid_file'] = logPidFile;
 
         await new Promise((resolve, reject) => {
-            childProcess.exec(`echo '${JSON.stringify([startupConfig])}' | pm2 ${method} -`, { stdio: [0, 1, 2] }, (error, stdout) => {
+            childProcess.exec(`echo '${JSON.stringify([startupConfig])}' | pm2 ${method} --update-env - `, { stdio: [0, 1, 2] }, (error, stdout) => {
                 if (error != undefined) return reject(error);
                 console.log(`\x1b[36m${stdout}\x1b[0m`);
                 return resolve(stdout);
@@ -44,19 +48,19 @@ module.exports = class {
         })
     }
 
-    static async start({script, name = 'default', namePrefix = '', args = undefined, env = undefined, nodeArgs = undefined, logOutFile = undefined, logErrorFile = undefined, logPidFile = undefined, minAliveTime = 5000, restartLimitBeforeAlive = 1}) {
-        return this._execute('start', {script, name, namePrefix, args, env, nodeArgs, logOutFile, logErrorFile, logPidFile, restartLimitBeforeAlive, minAliveTime});
+    static async start({script, name = 'default', namePrefix = '', args = undefined, env = undefined, nodeArgs = undefined, logOutFile = undefined, logErrorFile = undefined, logPidFile = undefined, minAliveTime = 5000, restartLimitBeforeAlive = 1, watch = false, ignoreWatch = false, watchFollowSymlinks = false}) {
+        return this._execute('start', {script, name, namePrefix, args, env, nodeArgs, logOutFile, logErrorFile, logPidFile, restartLimitBeforeAlive, minAliveTime, watch, ignoreWatch, watchFollowSymlinks});
     }
 
-    static async restart({script, name = 'default', namePrefix = '', args = undefined, env = undefined, nodeArgs = undefined, logOutFile = undefined, logErrorFile = undefined, logPidFile = undefined, minAliveTime = 5000, restartLimitBeforeAlive = 1}) {
-        return this._execute('restart', {script, name, namePrefix, args, env, nodeArgs, logOutFile, logErrorFile, logPidFile, restartLimitBeforeAlive, minAliveTime});
+    static async restart({script, name = 'default', namePrefix = '', args = undefined, env = undefined, nodeArgs = undefined, logOutFile = undefined, logErrorFile = undefined, logPidFile = undefined, minAliveTime = 5000, restartLimitBeforeAlive = 1, watch = false, ignoreWatch = false, watchFollowSymlinks = false}) {
+        return this._execute('restart', {script, name, namePrefix, args, env, nodeArgs, logOutFile, logErrorFile, logPidFile, restartLimitBeforeAlive, minAliveTime, watch, ignoreWatch, watchFollowSymlinks});
     }
 
-    static async stop({script, name = 'default', namePrefix = '', args = undefined, env = undefined, nodeArgs = undefined, logOutFile = undefined, logErrorFile = undefined, logPidFile = undefined, minAliveTime = 5000, restartLimitBeforeAlive = 1}) {
-        return this._execute('stop', {script, name, namePrefix, args, env, nodeArgs, logOutFile, logErrorFile, logPidFile, restartLimitBeforeAlive, minAliveTime});
+    static async stop({script, name = 'default', namePrefix = '', args = undefined, env = undefined, nodeArgs = undefined, logOutFile = undefined, logErrorFile = undefined, logPidFile = undefined, minAliveTime = 5000, restartLimitBeforeAlive = 1, watch = false, ignoreWatch = false, watchFollowSymlinks = false}) {
+        return this._execute('stop', {script, name, namePrefix, args, env, nodeArgs, logOutFile, logErrorFile, logPidFile, restartLimitBeforeAlive, minAliveTime, watch, ignoreWatch, watchFollowSymlinks});
     }
 
-    static async delete({script, name = 'default', namePrefix = '', args = undefined, env = undefined, nodeArgs = undefined, logOutFile = undefined, logErrorFile = undefined, logPidFile = undefined, minAliveTime = 5000, restartLimitBeforeAlive = 1}) {
-        return this._execute('delete', {script, name, namePrefix, args, env, nodeArgs, logOutFile, logErrorFile, logPidFile, restartLimitBeforeAlive, minAliveTime});
+    static async delete({script, name = 'default', namePrefix = '', args = undefined, env = undefined, nodeArgs = undefined, logOutFile = undefined, logErrorFile = undefined, logPidFile = undefined, minAliveTime = 5000, restartLimitBeforeAlive = 1, watch = false, ignoreWatch = false, watchFollowSymlinks = false}) {
+        return this._execute('delete', {script, name, namePrefix, args, env, nodeArgs, logOutFile, logErrorFile, logPidFile, restartLimitBeforeAlive, minAliveTime, watch, ignoreWatch, watchFollowSymlinks});
     }
 }
