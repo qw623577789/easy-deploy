@@ -3,7 +3,7 @@ const path = require('path');
 const fs = require('fs');
 module.exports = class {
     static async _execute(method, {script, name, namePrefix, args, env, nodeArgs, logOutFile, logErrorFile, logPidFile, minAliveTime, restartLimitBeforeAlive, watch, ignoreWatch, watchFollowSymlinks}) {
-        let basePath = fs.statSync(script).isDirectory ? script : path.dirname(script);
+        let basePath = fs.statSync(script).isDirectory() ? script : path.dirname(script);
         let startupConfig = {
             name: `${namePrefix}${name}`,
             script: script,
