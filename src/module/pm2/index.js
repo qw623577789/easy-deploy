@@ -1,4 +1,4 @@
-const childProcess = require('child_process');
+const LocalShell = require('../local_shell');
 const path = require('path');
 const fs = require('fs');
 module.exports = class {
@@ -40,13 +40,7 @@ module.exports = class {
         if (logErrorFile != undefined) startupConfig['error_file'] = logErrorFile;
         if (logPidFile != undefined) startupConfig['pid_file'] = logPidFile;
 
-        await new Promise((resolve, reject) => {
-            childProcess.exec(`echo '${JSON.stringify([startupConfig])}' | pm2 ${method} --update-env - `, { stdio: [0, 1, 2] }, (error, stdout) => {
-                if (error != undefined) return reject(error);
-                console.log(`\x1b[36m${stdout}\x1b[0m`);
-                return resolve(stdout);
-            })
-        })
+        await LocalShell.execute(`echo '${JSON.stringify([startupConfig])}' | pm2 ${method} --update-env - `);
     }
 
     static async start({script, name = 'default', namePrefix = '', args = undefined, env = undefined, nodeArgs = undefined, logOutFile = undefined, logErrorFile = undefined, logPidFile = undefined, minAliveTime = 5000, restartLimitBeforeAlive = 1, watch = false, ignoreWatch = false, watchFollowSymlinks = false}) {

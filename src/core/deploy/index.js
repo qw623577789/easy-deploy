@@ -1,5 +1,5 @@
 const RemoteShell = require('../../module/remote_shell');
-const childProcess = require('child_process');
+const LocalShell = require('../../module/local_shell');
 const moment = require('moment');
 const fs = require('fs');
 
@@ -40,8 +40,9 @@ module.exports = async(config) => {
 }
 
 async function remoteConnectCheck(remote) {
-    console.log("\x1b[32m[Remote Connect] ✓\x1b[0m");
+    console.log("\x1b[32m[Remote Connect] ...\x1b[0m");
     await remote.ping(false);
+    console.log("\x1b[32m[Remote Connect] ✓\x1b[0m");
 }
 
 async function remoteBackup(remote, remoteRoot, backup) {
@@ -60,13 +61,7 @@ async function remoteBackup(remote, remoteRoot, backup) {
 async function localShell(tasks) {
     console.log("\x1b[32m[Hook Local] ...\x1b[0m");
     for (let task of tasks) {
-        await new Promise((resolve, reject) => {
-            childProcess.exec(task, (error, stdout) => {
-                console.log(`\x1b[36m${stdout.toString()}\x1b[0m`);
-                if (error != undefined) return reject(error);
-                return resolve(stdout);
-            })
-        })
+        await LocalShell.execute(task);
     }
     console.log("\x1b[32m[Hook Local] ✓\x1b[0m");
 }
