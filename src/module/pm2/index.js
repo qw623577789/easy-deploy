@@ -20,7 +20,7 @@ module.exports = class {
                 usePolling: true
             }
         }
-console.log(startupConfig)
+
         if (args != undefined) {
             Object.keys(args).forEach(key => 
                 args[key] == "" ?
