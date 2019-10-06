@@ -20,8 +20,8 @@ module.exports = {
             // pm2PidFile: "",                      //程序进程id存放位置，默认:~/.pm2/pids/app_name-id.pid
             // minAliveTime: 10000,                 //程序启动后最短运行时间，单位毫秒，默认:5000，低于此时间属于不正常启动
             // restartLimitBeforeAlive: 2           //正常启动前最多允许错误自动重启的次数，默认:1
-            // watch: []                            //监视目录，默认不传,配置时用数组,路径基于启动文件路径
-            // ignoreWatch: []                      //忽略监视目录，默认不传,配置时用数组，路径基于启动文件路径
+            // watch: []                            //监视目录/文件，默认不传,配置时用数组,路径基于启动文件所在目录．例如启动文件路径为/tmp/index.js,监视其下的a目录，即填写['a']
+            // ignoreWatch: []                      //忽略监视目录/文件，配合watch参数使用，默认不传,配置时用数组，路径基于启动文件所在目录
             // watchFollowSymlinks: false           //监视时是否跟随软链
         },
         {
@@ -44,8 +44,8 @@ module.exports = {
             // pm2PidFile: "",                      //程序进程id存放位置，默认:~/.pm2/pids/app_name-id.pid
             // minAliveTime: 10000,                 //程序启动后最短运行时间，单位毫秒，默认:5000，低于此时间属于不正常启动
             // restartLimitBeforeAlive: 2           //正常启动前最多允许错误自动重启的次数，默认:1
-            // watch: []                            //监视目录，默认不传,配置时用数组,路径基于启动文件路径
-            // ignoreWatch: []                      //忽略监视目录，默认不传,配置时用数组，路径基于启动文件路径
+            // watch: []                            //监视目录/文件，默认不传,配置时用数组,路径基于启动文件所在目录．例如启动文件路径为/tmp/index.js,监视其下的a目录，即填写['a']
+            // ignoreWatch: []                      //忽略监视目录/文件，配合watch参数使用，默认不传,配置时用数组，路径基于启动文件所在目录
             // watchFollowSymlinks: false           //监视时是否跟随软链
         }
     ],

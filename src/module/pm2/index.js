@@ -6,17 +6,21 @@ module.exports = class {
         let basePath = fs.statSync(script).isDirectory() ? script : path.dirname(script);
         let startupConfig = {
             name: `${namePrefix}${name}`,
+            cwd: basePath,
             script: script,
             env: {},
             node_args: "",
             args: "",
             min_uptime: minAliveTime,
             max_restarts: restartLimitBeforeAlive,
-            watch: watch != false ? watch.map(_ => `${basePath}/${_}`) : watch,
-            ignore_watch: ignoreWatch != false ? ignoreWatch.map(_ => `${basePath}/${_}`) : ignoreWatch,
-            watchFollowSymlinks
+            watch,
+            ignore_watch: ignoreWatch,
+            watchFollowSymlinks,
+            watch_options: {
+                usePolling: true
+            }
         }
-
+console.log(startupConfig)
         if (args != undefined) {
             Object.keys(args).forEach(key => 
                 args[key] == "" ?
