@@ -245,3 +245,4 @@ easy-deploy start index.js --silent --silentInput 10.10.4.87 --silentInput 9200
 ## 备注
 1. 2018-09-20 增加引用node全局库，对于配置文件里面引用了第三方库情况，只需先行npm -g install xxx对应的库，再执行命令即可
 2. 2019-10-06 本地local shell及pm2内容输出改为流式输出及pm2 watch bug修复
+3. 2020-05-07 start|stop|restart|deploy命令后面支持直接输入``目录``或者``配置文件名字``，将会自动查找**当前运行目录下的deploy文件夹里的``目录下index.js``/``配置文件``**，若存在则自动加载该配置文件
