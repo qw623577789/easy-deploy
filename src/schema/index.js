@@ -13,6 +13,9 @@ module.exports = object().properties({
         nodeArgs: object().patternProperties({
             "^(.*)$": oneOf(string(), integer())
         }),
+        javaArgs: object().patternProperties({
+            "^(.*)$": oneOf(string(), integer())
+        }),
         pm2OutFile: string(),
         pm2ErrorFile: string(),
         pm2PidFile: string(),

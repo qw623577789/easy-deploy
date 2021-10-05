@@ -92,6 +92,11 @@ module.exports = {
             nodeArgs : {                            //若存在，则运行时添加node配置
                 "max-old-space-size": "4096"
             },
+            javaArgs: {
+                "Xms1024m": "",
+                "Xmx4096m": "",
+                "Dfile.encoding": "UTF-8"
+            },
             // pm2OutFile: "",                      //程序标准输出日志文件位置,默认：~/.pm2/logs/app_name-out.log
             // pm2ErrorFile: "",                    //程序标准出错日志文件位置，默认:~/.pm2/logs/app_name-error.log
             // pm2PidFile: "",                      //程序进程id存放位置，默认:~/.pm2/pids/app_name-id.pid
