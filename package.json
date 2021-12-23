@@ -1,6 +1,6 @@
 {
   "name": "easy-deploy-tool",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "基于pm2与ansible的简易项目运行与发布node库",
   "main": "index.js",
   "scripts": {

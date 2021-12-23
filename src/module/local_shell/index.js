@@ -4,8 +4,7 @@ module.exports = class {
         await new Promise((resolve, reject) => {
             let stringCollection = "";
     
-            let processor = childProcess.spawn(command, {
-                shell: true,
+            let processor = childProcess.spawn("bash", ["-c", command], {
                 ...opts
             });
     
