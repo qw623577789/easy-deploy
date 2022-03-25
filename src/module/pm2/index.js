@@ -2,7 +2,7 @@ const LocalShell = require('../local_shell');
 const path = require('path');
 const fs = require('fs');
 module.exports = class {
-    static async _execute(method, { script, name, namePrefix, args, env, nodeArgs, javaArgs, logOutFile, logErrorFile, logPidFile, minAliveTime, restartLimitBeforeAlive, watch, ignoreWatch, watchFollowSymlinks }) {
+    static async _execute(method, { script, name, namePrefix, args, env, nodeArgs, javaArgs, pm2OutFile, pm2ErrorFile, pm2PidFile, minAliveTime, restartLimitBeforeAlive, watch, ignoreWatch, watchFollowSymlinks }) {
         let basePath = fs.statSync(script).isDirectory() ? script : path.dirname(script);
         let startupConfig = {
             name: `${namePrefix}${name}`,
@@ -59,9 +59,9 @@ module.exports = class {
         if (env != undefined) {
             Object.keys(env).forEach(key => startupConfig.env[key] = env[key])
         }
-        if (logOutFile != undefined) startupConfig['out_file'] = logOutFile;
-        if (logErrorFile != undefined) startupConfig['error_file'] = logErrorFile;
-        if (logPidFile != undefined) startupConfig['pid_file'] = logPidFile;
+        if (pm2OutFile != undefined) startupConfig['out_file'] = pm2OutFile;
+        if (pm2ErrorFile != undefined) startupConfig['error_file'] = pm2ErrorFile;
+        if (pm2PidFile != undefined) startupConfig['pid_file'] = pm2PidFile;
 
         await LocalShell.execute(`echo '${JSON.stringify([startupConfig])}' | pm2 ${method} --update-env - `);
     }
@@ -73,9 +73,9 @@ module.exports = class {
         args = undefined,
         env = undefined,
         nodeArgs = undefined,
-        logOutFile = undefined,
-        logErrorFile = undefined,
-        logPidFile = undefined,
+        pm2OutFile = undefined,
+        pm2ErrorFile = undefined,
+        pm2PidFile = undefined,
         minAliveTime = 5000,
         restartLimitBeforeAlive = 1,
         watch = false,
@@ -83,7 +83,7 @@ module.exports = class {
         watchFollowSymlinks = false,
         javaArgs = undefined
     }) {
-        return this._execute('start', { script, name, namePrefix, args, env, javaArgs, nodeArgs, logOutFile, logErrorFile, logPidFile, restartLimitBeforeAlive, minAliveTime, watch, ignoreWatch, watchFollowSymlinks });
+        return this._execute('start', { script, name, namePrefix, args, env, javaArgs, nodeArgs, pm2OutFile, pm2ErrorFile, pm2PidFile, restartLimitBeforeAlive, minAliveTime, watch, ignoreWatch, watchFollowSymlinks });
     }
 
     static async restart({
@@ -93,9 +93,9 @@ module.exports = class {
         args = undefined,
         env = undefined,
         nodeArgs = undefined,
-        logOutFile = undefined,
-        logErrorFile = undefined,
-        logPidFile = undefined,
+        pm2OutFile = undefined,
+        pm2ErrorFile = undefined,
+        pm2PidFile = undefined,
         minAliveTime = 5000,
         restartLimitBeforeAlive = 1,
         watch = false,
@@ -103,7 +103,7 @@ module.exports = class {
         watchFollowSymlinks = false,
         javaArgs = undefined
     }) {
-        return this._execute('restart', { script, name, namePrefix, args, env, javaArgs, nodeArgs, logOutFile, logErrorFile, logPidFile, restartLimitBeforeAlive, minAliveTime, watch, ignoreWatch, watchFollowSymlinks });
+        return this._execute('restart', { script, name, namePrefix, args, env, javaArgs, nodeArgs, pm2OutFile, pm2ErrorFile, pm2PidFile, restartLimitBeforeAlive, minAliveTime, watch, ignoreWatch, watchFollowSymlinks });
     }
 
     static async stop({
@@ -113,9 +113,9 @@ module.exports = class {
         args = undefined,
         env = undefined,
         nodeArgs = undefined,
-        logOutFile = undefined,
-        logErrorFile = undefined,
-        logPidFile = undefined,
+        pm2OutFile = undefined,
+        pm2ErrorFile = undefined,
+        pm2PidFile = undefined,
         minAliveTime = 5000,
         restartLimitBeforeAlive = 1,
         watch = false,
@@ -123,7 +123,7 @@ module.exports = class {
         watchFollowSymlinks = false,
         javaArgs = undefined
     }) {
-        return this._execute('stop', { script, name, namePrefix, args, env, javaArgs, nodeArgs, logOutFile, logErrorFile, logPidFile, restartLimitBeforeAlive, minAliveTime, watch, ignoreWatch, watchFollowSymlinks });
+        return this._execute('stop', { script, name, namePrefix, args, env, javaArgs, nodeArgs, pm2OutFile, pm2ErrorFile, pm2PidFile, restartLimitBeforeAlive, minAliveTime, watch, ignoreWatch, watchFollowSymlinks });
     }
 
     static async delete({
@@ -133,9 +133,9 @@ module.exports = class {
         args = undefined,
         env = undefined,
         nodeArgs = undefined,
-        logOutFile = undefined,
-        logErrorFile = undefined,
-        logPidFile = undefined,
+        pm2OutFile = undefined,
+        pm2ErrorFile = undefined,
+        pm2PidFile = undefined,
         minAliveTime = 5000,
         restartLimitBeforeAlive = 1,
         watch = false,
@@ -143,6 +143,6 @@ module.exports = class {
         watchFollowSymlinks = false,
         javaArgs = undefined
     }) {
-        return this._execute('delete', { script, name, namePrefix, args, env, javaArgs, nodeArgs, logOutFile, logErrorFile, logPidFile, restartLimitBeforeAlive, minAliveTime, watch, ignoreWatch, watchFollowSymlinks });
+        return this._execute('delete', { script, name, namePrefix, args, env, javaArgs, nodeArgs, pm2OutFile, pm2ErrorFile, pm2PidFile, restartLimitBeforeAlive, minAliveTime, watch, ignoreWatch, watchFollowSymlinks });
     }
 }
