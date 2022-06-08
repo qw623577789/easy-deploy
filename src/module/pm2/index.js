@@ -24,13 +24,7 @@ module.exports = class {
         if (script.endsWith(".jar")) {
             let javaRuntimeParams = [];
             if (javaArgs != undefined) {
-                javaRuntimeParams = javaRuntimeParams.concat(
-                    Object.keys(javaArgs).map(key =>
-                        javaArgs[key] == "" ?
-                            `-${key}` :
-                            `-${key}=${javaArgs[key]}`
-                    )
-                );
+                javaRuntimeParams = javaRuntimeParams.concat(javaArgs);
             }
 
             javaRuntimeParams.push("-jar", script);
