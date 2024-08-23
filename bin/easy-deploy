@@ -3,10 +3,11 @@ const LocalShell = require('../src/module/local_shell');
 const childProcess = require('child_process');
 const globalNodeModulesPath = childProcess.execSync('npm root -g').toString().replace(/\n/g, '');
 
-(async() => {
-    await LocalShell.execute(`node ${__dirname}/../src/index.js ${process.argv.slice(2).join(' ')}`, {
+(async () => {
+    LocalShell.execute(`node ${__dirname}/../src/index.js ${process.argv.slice(2).join(' ')}`, {
         env: Object.assign(process.env, {
             NODE_PATH: globalNodeModulesPath
         })
-    });
+    })
+        .catch(error => console.log(error.message));
 })()

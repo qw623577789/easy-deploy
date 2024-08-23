@@ -3,11 +3,11 @@ module.exports = class {
     static async execute(command, opts = {}) {
         await new Promise((resolve, reject) => {
             let stringCollection = "";
-    
+
             let processor = childProcess.spawn("bash", ["-c", command], {
                 ...opts
             });
-    
+
             let collect = (data) => {
                 let output = "";
                 stringCollection += data.toString();
@@ -21,11 +21,14 @@ module.exports = class {
                 stringCollection = stringCollection.substring(output.length + 1);
                 console.log(`\x1b[36m${output}\x1b[0m`);
             }
-    
+
             processor.stdout.on('data', data => collect(data));
             processor.stderr.on('data', data => collect(data));
-            processor.on('error', reject);
-            processor.on('close', resolve);
+
+            processor.on('exit', (code, signal) => {
+                return code === 0 ? resolve() : reject("执行出错");
+            });
+
         })
     }
 }
