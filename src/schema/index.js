@@ -21,7 +21,8 @@ module.exports = object().properties({
         restartLimitBeforeAlive: integer().min(1),
         watch: array(string()),
         ignoreWatch: array(string()),
-        watchFollowSymlinks: boolean()
+        watchFollowSymlinks: boolean(),
+        cronRestart: string().desc('定时重启任务')
     }).required('script')),
     deploy: object().properties({
         user: string(),
@@ -43,7 +44,7 @@ module.exports = object().properties({
             afterRemote: array().item(string())
         })
     })
-        .if.properties({host: 'localhost'})
+        .if.properties({ host: 'localhost' })
         .then.required('host')
         .else.required('user', 'host', 'localRoot', 'remoteRoot')
         .endIf

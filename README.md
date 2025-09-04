@@ -105,6 +105,7 @@ module.exports = {
             // watch: []                            //监视目录/文件，默认不传,配置时用数组,路径基于启动文件所在目录．例如启动文件路径为/tmp/index.js,监视其下的a目录，即填写['a']
             // ignoreWatch: []                      //忽略监视目录/文件，配合watch参数使用，默认不传,配置时用数组，路径基于启动文件所在目录
             // watchFollowSymlinks: false           //监视时是否跟随软链
+            //cronRestart: "0 0 * * *"              //定时重启
         }
     ],
     deploy: {                                       //若存在，可执行发布操作
@@ -251,3 +252,4 @@ easy-deploy start index.js --silent --silentInput 10.10.4.87 --silentInput 9200
 1. 2018-09-20 增加引用node全局库，对于配置文件里面引用了第三方库情况，只需先行npm -g install xxx对应的库，再执行命令即可
 2. 2019-10-06 本地local shell及pm2内容输出改为流式输出及pm2 watch bug修复
 3. 2020-05-07 start|stop|restart|deploy命令后面支持直接输入``目录``或者``配置文件名字``，将会自动查找**当前运行目录下的deploy文件夹里的``目录下index.js``/``配置文件``**，若存在则自动加载该配置文件
+4.2025-09-05 添加应用定时自动重启功能

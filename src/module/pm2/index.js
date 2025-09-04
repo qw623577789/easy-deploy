@@ -2,7 +2,7 @@ const LocalShell = require('../local_shell');
 const path = require('path');
 const fs = require('fs');
 module.exports = class {
-    static async _execute(method, { script, name, namePrefix, args, env, nodeArgs, javaArgs, pm2OutFile, pm2ErrorFile, pm2PidFile, minAliveTime, restartLimitBeforeAlive, watch, ignoreWatch, watchFollowSymlinks }) {
+    static async _execute(method, { script, name, namePrefix, args, env, nodeArgs, javaArgs, pm2OutFile, pm2ErrorFile, pm2PidFile, minAliveTime, restartLimitBeforeAlive, watch, ignoreWatch, watchFollowSymlinks, cronRestart }) {
         let basePath = fs.statSync(script).isDirectory() ? script : path.dirname(script);
         let startupConfig = {
             name: `${namePrefix}${name}`,
@@ -57,6 +57,8 @@ module.exports = class {
         if (pm2ErrorFile != undefined) startupConfig['error_file'] = pm2ErrorFile;
         if (pm2PidFile != undefined) startupConfig['pid_file'] = pm2PidFile;
 
+        if (cronRestart != undefined) startupConfig.cron_restart = cronRestart;
+ 
         await LocalShell.execute(`echo '${JSON.stringify([startupConfig])}' | pm2 ${method} --update-env - `);
     }
 
@@ -75,9 +77,10 @@ module.exports = class {
         watch = false,
         ignoreWatch = false,
         watchFollowSymlinks = false,
-        javaArgs = undefined
+        javaArgs = undefined,
+        cronRestart = undefined
     }) {
-        return this._execute('start', { script, name, namePrefix, args, env, javaArgs, nodeArgs, pm2OutFile, pm2ErrorFile, pm2PidFile, restartLimitBeforeAlive, minAliveTime, watch, ignoreWatch, watchFollowSymlinks });
+        return this._execute('start', { script, name, namePrefix, args, env, javaArgs, nodeArgs, pm2OutFile, pm2ErrorFile, pm2PidFile, restartLimitBeforeAlive, minAliveTime, watch, ignoreWatch, watchFollowSymlinks, cronRestart });
     }
 
     static async restart({
@@ -95,9 +98,10 @@ module.exports = class {
         watch = false,
         ignoreWatch = false,
         watchFollowSymlinks = false,
-        javaArgs = undefined
+        javaArgs = undefined,
+        cronRestart = undefined
     }) {
-        return this._execute('restart', { script, name, namePrefix, args, env, javaArgs, nodeArgs, pm2OutFile, pm2ErrorFile, pm2PidFile, restartLimitBeforeAlive, minAliveTime, watch, ignoreWatch, watchFollowSymlinks });
+        return this._execute('restart', { script, name, namePrefix, args, env, javaArgs, nodeArgs, pm2OutFile, pm2ErrorFile, pm2PidFile, restartLimitBeforeAlive, minAliveTime, watch, ignoreWatch, watchFollowSymlinks, cronRestart });
     }
 
     static async stop({
@@ -115,9 +119,10 @@ module.exports = class {
         watch = false,
         ignoreWatch = false,
         watchFollowSymlinks = false,
-        javaArgs = undefined
+        javaArgs = undefined,
+        cronRestart = undefined
     }) {
-        return this._execute('stop', { script, name, namePrefix, args, env, javaArgs, nodeArgs, pm2OutFile, pm2ErrorFile, pm2PidFile, restartLimitBeforeAlive, minAliveTime, watch, ignoreWatch, watchFollowSymlinks });
+        return this._execute('stop', { script, name, namePrefix, args, env, javaArgs, nodeArgs, pm2OutFile, pm2ErrorFile, pm2PidFile, restartLimitBeforeAlive, minAliveTime, watch, ignoreWatch, watchFollowSymlinks, cronRestart });
     }
 
     static async delete({
@@ -135,8 +140,9 @@ module.exports = class {
         watch = false,
         ignoreWatch = false,
         watchFollowSymlinks = false,
-        javaArgs = undefined
+        javaArgs = undefined,
+        cronRestart = undefined
     }) {
-        return this._execute('delete', { script, name, namePrefix, args, env, javaArgs, nodeArgs, pm2OutFile, pm2ErrorFile, pm2PidFile, restartLimitBeforeAlive, minAliveTime, watch, ignoreWatch, watchFollowSymlinks });
+        return this._execute('delete', { script, name, namePrefix, args, env, javaArgs, nodeArgs, pm2OutFile, pm2ErrorFile, pm2PidFile, restartLimitBeforeAlive, minAliveTime, watch, ignoreWatch, watchFollowSymlinks, cronRestart });
     }
 }
