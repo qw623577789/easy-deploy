@@ -1,5 +1,3 @@
-const jumper = require('../../test/toolchain/jumper');
-
 const { object, integer, array, empty, oneOf, boolean, string } = require('semantic-schema').schema;
 module.exports = object().properties({
     apps: array().item(object().properties({
