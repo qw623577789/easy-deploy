@@ -13,9 +13,9 @@
 
 ## 依赖要求
 
-本机: node、pm2、ansible、python2.7、rsync
+本机: node、pm2、ansible、python3、rsync
 
-远程主机: node、pm2、python2.7
+远程主机: node、pm2、python3、rsync(发布时需要)
 
 ## 基本命令
 ```shell
@@ -112,6 +112,10 @@ module.exports = {
         user: "test",                               //登录名
         host: "10.10.4.87",                         //远程ip
         sshPort: 22,
+        // jumperHost: "10.10.5.3",                 //跳板机ip，存在时经跳板机连接目标机
+        // jumperUser: "test",                      //跳板机登录名
+        // jumperSSHPort: 22,                       //跳板机ssh端口，默认22
+        // pythonInterpreter: "/usr/bin/python3",   //目标机python解释器路径，默认/usr/bin/python3
         // privateSSHKeyFile: "",                   //登录密钥文件，默认系统配置
         localRoot: "/tmp/abc",                      //本地项目路径
         remoteRoot: "/tmp/abd/",                    //远程项目路径
@@ -142,6 +146,48 @@ module.exports = {
 	}
 }
 ```
+## 跳板机部署
+当目标机器不能从本机直接访问，只能通过跳板机(堡垒机)中转时，在`deploy`节点配置跳板机相关字段即可:
+
+```js
+deploy: {
+    user: "node",                               //目标机登录名
+    host: "project-core",                       //目标机地址(由跳板机解析，可直接使用跳板机hosts配置的域名)
+    sshPort: 22,                                //目标机ssh端口，默认22
+    jumperHost: "10.10.5.3",                    //跳板机ip
+    jumperUser: "test",                         //跳板机登录名
+    jumperSSHPort: 22,                          //跳板机ssh端口，默认22
+    localRoot: "/tmp/abc",                      //本地项目路径
+    remoteRoot: "/tmp/abd/",                    //远程项目路径
+}
+```
+
+### 工作原理
+开启跳板机模式后，本机与目标机的ssh连接由跳板机做TCP转发，等价于:
+
+```shell
+ssh -o ProxyCommand="ssh -W %h:%p -p <跳板机端口> <跳板机用户>@<跳板机地址>" -p <目标机端口> <目标机用户>@<目标机地址>
+```
+
+文件同步(rsync)同样走跳板机转发，无需额外配置。
+
+### 前提条件
+1. **本机→跳板机免密登录**: 本机公钥需配置在跳板机的`~/.ssh/authorized_keys`中
+2. **本机→目标机免密登录**: 跳板机只做TCP转发，目标机的认证仍由本机直接完成，因此本机公钥同样需要配置在目标机的`~/.ssh/authorized_keys`中。可通过跳板机转发安装:
+```shell
+cat ~/.ssh/id_rsa.pub | ssh -p <跳板机端口> <跳板机用户>@<跳板机地址> "ssh <目标机用户>@<目标机地址> 'mkdir -p ~/.ssh && chmod 700 ~/.ssh && cat >> ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys'"
+```
+3. **目标机host key已录入**: 目标机的host key需先录入本机`known_hosts`，否则部署时会报`Host key verification failed`。可先手动连接一次(回答yes确认)，或执行:
+```shell
+ssh -o StrictHostKeyChecking=accept-new -o ProxyCommand="ssh -W %h:%p -p <跳板机端口> <跳板机用户>@<跳板机地址>" -p <目标机端口> <目标机用户>@<目标机地址> 'echo ok'
+```
+4. **目标机环境**: 目标机需安装`python3`(ansible执行模块需要，可用`pythonInterpreter`指定解释器路径，默认`/usr/bin/python3`)与`rsync`(文件同步需要)
+
+### 常见错误
+|错误|原因|解决|
+|---|---|---|
+|`Unsupported parameters for (xxx) module: use_ssh_args`|easy-deploy版本过旧，跳板机模式下误传了参数|升级easy-deploy|
+
 ## 配置终端交互
 有时配置文件里某些值需要外部传入，那么交互功能则是提供一套组件供开发者使用．其基于readline-sync库进行封装．目前提供以下几种交互:
 交互|方法|参数|返回值|备注
@@ -185,6 +231,10 @@ module.exports = {
         user: "test",                               //登录名
         host: "10.10.4.87",                         //远程ip
         sshPort: 22,
+        // jumperHost: "10.10.5.3",                 //跳板机ip，存在时经跳板机连接目标机
+        // jumperUser: "test",                      //跳板机登录名
+        // jumperSSHPort: 22,                       //跳板机ssh端口，默认22
+        // pythonInterpreter: "/usr/bin/python3",   //目标机python解释器路径，默认/usr/bin/python3
         // privateSSHKeyFile: "",                   //登录密钥文件，默认系统配置
         localRoot: "/tmp/abc",                      //本地项目路径
         remoteRoot: "/tmp/abd/",                    //远程项目路径

@@ -19,13 +19,21 @@ module.exports = async (config) => {
         remoteRoot,
         exclude = [],
         backup = undefined,
-        hook = undefined
+        hook = undefined,
+        jumperHost = undefined,
+        jumperUser = undefined,
+        jumperSSHPort = 22,
+        pythonInterpreter = undefined,
     } } = config;
     let remote = new RemoteShell({
         host,
         user,
         sshPort,
-        privateSSHKeyFile
+        privateSSHKeyFile,
+        jumperHost,
+        jumperUser,
+        jumperSSHPort,
+        pythonInterpreter
     });
     if (fs.statSync(localRoot).isDirectory && localRoot.substring(-1) != '/') localRoot += '/';
     let isRemoteMode = host != "localhost";
@@ -51,7 +59,7 @@ async function remoteBackup(remote, remoteRoot, backup) {
         let { saveDir, pattern = 'YYYY-MM-DD HH:mm:ss', exclude = [] } = backup;
         await remote.mkdir({ path: saveDir, showDetail: false });
         await remote.shell({
-            args: `if [ -e ${remoteRoot} ];then cd ${remoteRoot} && tar -zcvf ${saveDir}/${moment().format(pattern)}.tar.gz ./ ${exclude.map(_ => `--exclude=${_}`).join(' ')};fi`,
+            args: `if [ -e ${remoteRoot} ];then cd ${remoteRoot} && tar -zcvf ${saveDir}/${moment().format(pattern)}.tar.gz ${exclude.map(_ => `--exclude=${_}`).join(' ')} ./;fi`,
             showDetail: false
         })
         console.log("\x1b[32m[Remote Backup] ✓\x1b[0m");

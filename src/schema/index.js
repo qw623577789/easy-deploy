@@ -1,3 +1,5 @@
+const jumper = require('../../test/toolchain/jumper');
+
 const { object, integer, array, empty, oneOf, boolean, string } = require('semantic-schema').schema;
 module.exports = object().properties({
     apps: array().item(object().properties({
@@ -28,6 +30,10 @@ module.exports = object().properties({
         user: string(),
         host: string(),
         sshPort: integer(),
+        jumperHost: string(),
+        jumperUser: string(),
+        jumperSSHPort: integer(),
+        pythonInterpreter: string(),
         privateSSHKeyFile: string(),
         localRoot: string(),
         remoteRoot: string(),
